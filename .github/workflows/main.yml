@@ -1,0 +1,36 @@
+name: Main Branch Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  nix_build_deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install Nix
+      uses: cachix/install-nix-action@v22
+      with:
+        extra_nix_config: |
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+    - uses: workflow/nix-shell-action@v3.3.0
+      with:
+        flakes-from-devshell: true
+        script: |
+          make build
+
+    - uses: jsmrcaga/action-netlify-deploy@v2.0.0
+      with:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID}}
+        NETLIFY_DEPLOY_TO_PROD: true
+        build_directory: public
+        install_command: "echo install"
+        build_command: "echo build"
