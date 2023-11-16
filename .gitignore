@@ -1,3 +1,15 @@
+*.pyc
+/static/site.css
 
-# Zola output directory
+.doit.db.db
+output/
+/tailwind/site.css
+/cache/
+/_site
+/site
 /public
+*.swp
+.DS_Store
+.s3cfg
+/deps
+/.erlang.mk
